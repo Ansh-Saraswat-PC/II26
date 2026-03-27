@@ -26,6 +26,14 @@
                             light: '#34d399', 
                             DEFAULT: '#10b981', 
                             dark: '#047857', 
+                        },
+                        aqi: {
+                            green: '#22c55e',   // <50
+                            yellow: '#eab308',  // 51-100
+                            orange: '#f97316',  // 101-150
+                            red: '#ef4444',     // 151-200
+                            purple: '#a855f7',  // 201-300
+                            maroon: '#9f1239'   // >300
                         }
                     }
                 }
@@ -38,10 +46,13 @@
         ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #52525b; }
         .glass-panel { background: rgba(24, 24, 27, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        
-        /* Custom Map Controls */
         .leaflet-control-layers { background: #18181b !important; color: #e4e4e7 !important; border: 1px solid #3f3f46 !important; border-radius: 8px !important; }
-        .leaflet-control-layers-expanded { padding: 10px !important; }
+        
+        /* CSS Sparkline for 6h forecast */
+        .sparkline { display: flex; align-items: flex-end; gap: 4px; height: 40px; margin-top: 8px; }
+        .spark-bar { width: 12px; border-radius: 2px 2px 0 0; transition: height 0.3s ease; position: relative; group-hover: opacity-80; }
+        .spark-tooltip { display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #18181b; color: #fff; font-size: 10px; padding: 2px 4px; border-radius: 4px; margin-bottom: 4px; white-space: nowrap; z-index: 10;}
+        .spark-bar:hover .spark-tooltip { display: block; }
     </style>
 </head>
 <body class="bg-zinc-50 text-zinc-900 font-sans antialiased selection:bg-brand selection:text-white">
@@ -56,15 +67,15 @@
                     <span class="font-bold text-xl tracking-tight text-white">AirWatch Ward <span class="text-xs font-mono text-brand border border-brand/30 px-1.5 py-0.5 rounded ml-2">v1.0</span></span>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="#prototype" class="text-sm font-medium text-zinc-300 hover:text-brand transition">Live Prototype</a>
-                    <a href="#architecture" class="text-sm font-medium text-zinc-300 hover:text-brand transition">Architecture</a>
+                    <a href="#problem" class="text-sm font-medium text-zinc-300 hover:text-brand transition">The Problem</a>
+                    <a href="#prototype" class="text-sm font-medium text-brand hover:text-brand-light transition">Dual-Audience Demo</a>
                     <a href="#team" class="text-sm font-medium text-zinc-300 hover:text-brand transition">Team</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <section class="relative pt-40 pb-32 bg-zinc-950 overflow-hidden">
+    <section class="relative pt-40 pb-20 bg-zinc-950 overflow-hidden">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand/20 rounded-full blur-[120px] pointer-events-none"></div>
         
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
@@ -75,312 +86,204 @@
             <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 text-white leading-tight">
                 Hyper-Local <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-light to-brand">AQI Intelligence</span>
             </h1>
-            <p class="text-xl md:text-2xl text-zinc-400 max-w-3xl mx-auto mb-12 font-light">
-                A zero-backend SPA mapping air quality at the ward level. Auto-detect pollution sources in-browser via ONNX and generate targeted advisories with Gemini 3.0 Flash.
+            <p class="text-xl md:text-2xl text-zinc-400 max-w-3xl mx-auto font-light">
+                A zero-backend SPA mapping air quality at the ward level. Serving citizens with plain-language health guidance, and administrators with AI-powered policy projections.
             </p>
         </div>
     </section>
 
-    <section id="prototype" class="py-24 bg-zinc-950 text-zinc-300 border-t border-zinc-900">
-        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-sm font-bold text-brand tracking-wider uppercase mb-3">Interactive Demo</h2>
-                <h3 class="text-3xl md:text-4xl font-extrabold text-white">AirWatch Admin Console</h3>
-            </div>
+    <section id="problem" class="py-12 bg-zinc-950 border-b border-zinc-900">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-zinc-400 text-lg max-w-4xl mx-auto">
+                <strong class="text-white">Spatial Masking:</strong> High-AQI micro-zones near construction or biomass burning are averaged away in city-level dashboards. Delhi alone sees 54,000+ premature deaths annually linked to air pollution [cite: 12] — a crisis that proactive, ward-level governance can mitigate.
+            </p>
+        </div>
+    </section>
 
-            <div class="rounded-2xl border border-zinc-700 bg-zinc-900 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col h-[800px] ring-1 ring-white/10">
+    <section id="prototype" class="py-24 bg-zinc-900 text-zinc-300">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
+                <div>
+                    <h2 class="text-sm font-bold text-brand tracking-wider uppercase mb-2">Interactive Demo</h2>
+                    <h3 class="text-3xl font-extrabold text-white">Platform v1.0</h3>
+                </div>
                 
-                <div class="h-14 bg-zinc-800 border-b border-zinc-700 flex items-center justify-between px-6 shrink-0">
-                    <div class="flex items-center gap-4">
-                        <div class="flex gap-1.5">
-                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-amber-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                        </div>
-                        <div class="h-4 w-px bg-zinc-600"></div>
-                        <span class="font-semibold text-white font-mono text-sm">React 18 + Vite SPA</span>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="bg-zinc-950 p-1 rounded-lg border border-zinc-700 flex text-sm">
+                        <button class="px-4 py-2 rounded-md bg-zinc-800 text-white font-medium shadow-sm transition"><i class="fa-solid fa-satellite-dish text-brand mr-2 animate-pulse"></i>Live (OpenAQ)</button>
+                        <button class="px-4 py-2 rounded-md text-zinc-400 hover:text-white transition"><i class="fa-solid fa-vial mr-2"></i>Simulated (10s)</button>
                     </div>
-                    <div class="flex items-center gap-6 text-sm">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-brand"></i> NCR Region (272 Wards)</span>
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-clock text-amber-400"></i> Live Sync (10s)</span>
+
+                    <div class="bg-zinc-950 p-1 rounded-lg border border-zinc-700 flex text-sm">
+                        <button onclick="toggleView('admin')" id="btn-admin" class="px-4 py-2 rounded-md bg-brand/20 text-brand font-bold shadow-sm transition"><i class="fa-solid fa-shield-halved mr-2"></i>Admin View</button>
+                        <button onclick="toggleView('citizen')" id="btn-citizen" class="px-4 py-2 rounded-md text-zinc-400 hover:text-white transition"><i class="fa-solid fa-mobile-screen mr-2"></i>Citizen View</button>
                     </div>
                 </div>
+            </div>
 
-                <div class="flex-1 flex relative overflow-hidden">
-                    <div class="w-64 bg-zinc-900 border-r border-zinc-800 p-4 hidden md:flex flex-col gap-2 z-10">
-                        <button onclick="switchTab('heatmap')" id="nav-heatmap" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-lg bg-brand/10 text-brand font-medium w-full text-left transition">
-                            <i class="fa-solid fa-map"></i> Ward Heatmap
-                        </button>
-                        <button onclick="switchTab('classifier')" id="nav-classifier" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-white w-full text-left transition">
-                            <i class="fa-solid fa-microchip"></i> ONNX Classifier
-                        </button>
-                        <button onclick="switchTab('impact')" id="nav-impact" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-white w-full text-left transition">
-                            <i class="fa-solid fa-chart-pie"></i> Impact Forecast
-                        </button>
-                        
-                        <div class="mt-auto pt-4 border-t border-zinc-800 space-y-3">
-                            <div class="text-xs text-zinc-500 uppercase tracking-wider font-bold">Data Layer Status</div>
-                            <div class="flex items-center gap-2 text-xs font-mono text-green-400">
-                                <i class="fa-solid fa-link"></i> OpenAQ v3
-                            </div>
-                            <div class="flex items-center gap-2 text-xs font-mono text-green-400">
-                                <i class="fa-solid fa-link"></i> WAQI Fallback
-                            </div>
-                            <div class="flex items-center gap-2 text-xs font-mono text-brand-light">
-                                <i class="fa-solid fa-bolt"></i> Gemini SSE Stream
-                            </div>
+            <div id="app-container" class="rounded-2xl border border-zinc-700 bg-zinc-950 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col h-[800px] ring-1 ring-white/10 relative transition-all duration-500">
+                
+                <div id="view-admin" class="flex-1 flex flex-col h-full w-full absolute inset-0 z-10 transition-opacity duration-300">
+                    <div class="h-14 bg-zinc-800 border-b border-zinc-700 flex items-center justify-between px-6 shrink-0">
+                        <div class="flex items-center gap-4">
+                            <span class="font-bold text-white uppercase tracking-wider text-sm"><i class="fa-solid fa-building-shield text-brand mr-2"></i>MCD Environment Dashboard</span>
+                        </div>
+                        <div class="flex items-center gap-6 text-sm font-mono text-zinc-400">
+                            <span>OpenAQ v3</span> | <span>ONNX Web Runtime</span> | <span>Gemini 3.0 Flash</span>
                         </div>
                     </div>
 
-                    <div class="flex-1 relative bg-zinc-950">
-                        
-                        <div id="tab-heatmap" class="absolute inset-0 z-0">
+                    <div class="flex-1 flex relative overflow-hidden">
+                        <div class="flex-1 relative z-0">
                             <div id="ward-map" class="w-full h-full"></div>
                             
-                            <div class="absolute bottom-6 left-6 w-[350px] glass-panel rounded-xl p-5 shadow-2xl z-[400] border-l-4 border-red-500">
+                            <div class="absolute bottom-6 left-6 w-[400px] glass-panel rounded-xl p-5 shadow-2xl z-[400] border-t-4 border-aqi-maroon">
                                 <div class="flex justify-between items-center mb-4">
                                     <h4 class="font-bold text-white flex items-center gap-2 text-sm">
-                                        <i class="fa-solid fa-sparkles text-brand"></i> Gemini Flash Advisory
+                                        <i class="fa-solid fa-sparkles text-brand"></i> Actionable Policy Generator
                                     </h4>
-                                    <span class="text-xs bg-red-500 text-white px-2 py-1 rounded font-mono">Anand Vihar</span>
+                                    <span class="text-xs bg-zinc-800 text-zinc-300 px-2 py-1 rounded font-mono border border-zinc-700">Ward 94 (Rohini)</span>
                                 </div>
-                                <div class="space-y-3 text-sm">
-                                    <div class="bg-zinc-800/80 p-3 rounded border border-zinc-700">
-                                        <strong class="text-zinc-300 block mb-1">AQI Normalized (CPCB):</strong>
-                                        <span class="text-red-400 text-lg font-bold">342 (Severe)</span>
-                                    </div>
-                                    <p class="text-zinc-400 leading-relaxed font-sans text-xs">
-                                        <span class="text-brand">Gemini Output:</span> High probability of localized vehicular gridlock combined with winter inversion. Recommended action: Halt non-essential HDV entry within 5km of ISBT perimeter immediately.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="tab-classifier" class="absolute inset-0 z-0 hidden bg-zinc-900 p-8 overflow-y-auto">
-                            <div class="flex justify-between items-center border-b border-zinc-800 pb-4 mb-6">
-                                <h2 class="text-2xl font-bold text-white">ONNX.js Classifier Engine</h2>
-                                <span class="bg-zinc-800 text-zinc-400 px-3 py-1 rounded text-xs font-mono">Latency: 38ms</span>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-6 shadow-inner">
-                                    <h3 class="text-zinc-400 font-semibold mb-4 uppercase text-xs tracking-wider">Engineered Features (Okhla Phase II)</h3>
-                                    <div class="space-y-4 font-mono text-sm text-zinc-300">
-                                        <div class="flex justify-between border-b border-zinc-800 pb-2"><span>PM2.5 / PM10 Ratio</span><span class="text-amber-400">0.82 (High)</span></div>
-                                        <div class="flex justify-between border-b border-zinc-800 pb-2"><span>NO2 Concentration</span><span class="text-amber-400">85 µg/m³</span></div>
-                                        <div class="flex justify-between border-b border-zinc-800 pb-2"><span>CO Level</span><span class="text-amber-400">1.2 mg/m³</span></div>
-                                        <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Hour of Day</span><span class="text-brand">14 (2:00 PM)</span></div>
-                                        <div class="flex justify-between border-b border-zinc-800 pb-2"><span>Ward Type [Encoded]</span><span class="text-brand">3 (Industrial)</span></div>
-                                        <div class="flex justify-between border-b border-zinc-800 pb-2"><span>AQI Spike Delta (vs 3h avg)</span><span class="text-red-400">+58 units</span></div>
-                                    </div>
-                                    <button class="mt-6 w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg transition border border-zinc-700 text-sm font-medium">
-                                        <i class="fa-solid fa-play mr-2"></i> Run Inference (Client-Side)
-                                    </button>
-                                </div>
-
-                                <div class="bg-zinc-800 border border-zinc-700 rounded-xl p-6 shadow-lg relative overflow-hidden">
-                                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-bl-full"></div>
-                                    <h3 class="text-zinc-400 font-semibold mb-4 uppercase text-xs tracking-wider">DecisionTree Results</h3>
-                                    
-                                    <div class="space-y-6">
-                                        <div>
-                                            <div class="flex justify-between text-sm mb-1">
-                                                <span class="text-white font-medium">Industrial</span>
-                                                <span class="text-brand font-bold">87%</span>
-                                            </div>
-                                            <div class="w-full bg-zinc-950 rounded-full h-2.5"><div class="bg-brand h-2.5 rounded-full" style="width: 87%"></div></div>
-                                        </div>
-                                        <div>
-                                            <div class="flex justify-between text-sm mb-1">
-                                                <span class="text-white font-medium">Vehicular</span>
-                                                <span class="text-amber-400 font-bold">9%</span>
-                                            </div>
-                                            <div class="w-full bg-zinc-950 rounded-full h-2.5"><div class="bg-amber-400 h-2.5 rounded-full" style="width: 9%"></div></div>
-                                        </div>
-                                        <div>
-                                            <div class="flex justify-between text-sm mb-1">
-                                                <span class="text-white font-medium">Construction Dust</span>
-                                                <span class="text-zinc-500 font-bold">3%</span>
-                                            </div>
-                                            <div class="w-full bg-zinc-950 rounded-full h-2.5"><div class="bg-zinc-500 h-2.5 rounded-full" style="width: 3%"></div></div>
-                                        </div>
-                                        <div>
-                                            <div class="flex justify-between text-sm mb-1">
-                                                <span class="text-white font-medium">Biomass Burning</span>
-                                                <span class="text-zinc-500 font-bold">1%</span>
-                                            </div>
-                                            <div class="w-full bg-zinc-950 rounded-full h-2.5"><div class="bg-zinc-500 h-2.5 rounded-full" style="width: 1%"></div></div>
-                                        </div>
+                                
+                                <div class="space-y-4 text-sm">
+                                    <div class="flex justify-between items-center bg-zinc-900/80 p-2 rounded border border-zinc-700">
+                                        <span class="text-zinc-400">Source: <strong class="text-red-400">Construction Dust</strong></span>
+                                        <span class="text-zinc-400">Confidence: <strong class="text-white">87%</strong></span>
+                                        <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold uppercase">Critical Urgency</span>
                                     </div>
 
-                                    <div class="mt-8 p-4 bg-brand/10 border border-brand/20 rounded-lg">
-                                        <p class="text-sm text-brand-light font-mono text-xs">
-                                            > Inference complete. Scikit-learn model executed via wasm backend. Triggering JSON payload to Gemini.
+                                    <div>
+                                        <strong class="text-zinc-300 block mb-1 text-xs uppercase tracking-wider">Policy Recommendation:</strong>
+                                        <p class="text-zinc-300 leading-relaxed font-sans text-sm bg-zinc-800/50 p-3 rounded border border-zinc-700">
+                                            Deploy mechanised water sprinklers immediately to Rohini Sector 11 ring road. Halt all excavation at the Phase 3 residential site for the next 12 hours.
                                         </p>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div id="tab-impact" class="absolute inset-0 z-0 hidden bg-zinc-900 p-8 overflow-y-auto">
-                            <h2 class="text-2xl font-bold text-white mb-2">Moving-Average Forecast Engine</h2>
-                            <p class="text-zinc-400 mb-8 border-b border-zinc-800 pb-4">Projected Recharts sparkline data based on simulated interventions.</p>
-
-                            <div class="bg-zinc-800 border border-zinc-700 rounded-xl p-6 shadow-lg">
-                                <div class="flex justify-between items-end mb-8">
-                                    <div>
-                                        <h3 class="text-xl font-bold text-white">Punjabi Bagh Interventions</h3>
-                                        <p class="text-sm text-zinc-400">Action: Halt heavy vehicles (Targeting PM2.5 skew)</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-3xl font-extrabold text-brand">-45%</div>
-                                        <div class="text-xs text-zinc-400 uppercase tracking-wider">Est. AQI Drop</div>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-end gap-4 h-64 mt-4 border-b border-l border-zinc-700 pl-4 pb-4 pt-4 relative">
-                                    <div class="absolute -left-10 top-0 text-xs text-zinc-500">AQI 400</div>
-                                    <div class="absolute -left-10 bottom-0 text-xs text-zinc-500">AQI 0</div>
-                                    
-                                    <div class="w-1/4 flex flex-col justify-end items-center group">
-                                        <div class="w-full bg-red-500 rounded-t-md h-[90%] transition-all group-hover:opacity-80 relative">
-                                            <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-red-400">380</span>
-                                        </div>
-                                        <span class="text-xs text-zinc-400 mt-2">Current</span>
-                                    </div>
-                                    <div class="w-1/4 flex flex-col justify-end items-center group">
-                                        <div class="w-full bg-amber-500 rounded-t-md h-[70%] transition-all group-hover:opacity-80 relative">
-                                            <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-amber-400">290</span>
-                                        </div>
-                                        <span class="text-xs text-zinc-400 mt-2">+12 Hrs</span>
-                                    </div>
-                                    <div class="w-1/4 flex flex-col justify-end items-center group">
-                                        <div class="w-full bg-yellow-500 rounded-t-md h-[55%] transition-all group-hover:opacity-80 relative">
-                                            <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-yellow-400">210</span>
-                                        </div>
-                                        <span class="text-xs text-zinc-400 mt-2">+24 Hrs</span>
-                                    </div>
-                                    <div class="w-1/4 flex flex-col justify-end items-center group">
-                                        <div class="w-full bg-brand rounded-t-md h-[40%] transition-all group-hover:opacity-80 relative">
-                                            <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-brand-light">145</span>
-                                        </div>
-                                        <span class="text-xs text-zinc-400 mt-2">+48 Hrs</span>
+                                    <div class="flex justify-between items-center border-t border-zinc-700 pt-3">
+                                        <span class="text-xs text-zinc-400 uppercase">Projected AQI Reduction:</span>
+                                        <span class="text-brand font-bold text-lg">-35 Units <span class="text-xs font-normal text-zinc-500">(in 2 hours)</span></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
+                </div>
+
+                <div id="view-citizen" class="h-full w-full absolute inset-0 z-0 opacity-0 pointer-events-none bg-zinc-950 flex items-center justify-center transition-opacity duration-300">
+                    
+                    <div class="w-[375px] h-[700px] bg-white rounded-[2.5rem] border-[8px] border-zinc-800 shadow-2xl relative overflow-hidden flex flex-col font-sans text-zinc-900">
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-zinc-800 rounded-b-xl z-50"></div>
+                        
+                        <div class="pt-12 pb-4 px-6 bg-gradient-to-b from-blue-50 to-white">
+                            <div class="flex justify-between items-center mb-6">
+                                <i class="fa-solid fa-bars text-zinc-600"></i>
+                                <span class="font-bold text-brand flex items-center gap-2"><i class="fa-solid fa-wind"></i> AirWatch</span>
+                                <i class="fa-solid fa-bell text-zinc-600"></i>
+                            </div>
+                            <h2 class="text-2xl font-extrabold text-zinc-900">Ward 94</h2>
+                            <p class="text-zinc-500 text-sm"><i class="fa-solid fa-location-dot mr-1"></i> Rohini, Delhi</p>
+                        </div>
+
+                        <div class="px-6 flex-1 overflow-y-auto pb-8">
+                            <div class="w-48 h-48 rounded-full border-[12px] border-aqi-maroon flex flex-col items-center justify-center mx-auto my-6 shadow-lg shadow-aqi-maroon/20">
+                                <span class="text-5xl font-black text-zinc-900">380</span>
+                                <span class="text-aqi-maroon font-bold uppercase tracking-wide mt-1">Severe</span>
+                            </div>
+
+                            <div class="bg-red-50 rounded-2xl p-5 mb-6 border border-red-100">
+                                <div class="flex items-center gap-2 mb-2 text-red-600 font-bold">
+                                    <i class="fa-solid fa-user-doctor"></i> Health Advisory
+                                </div>
+                                <p class="text-zinc-800 leading-relaxed text-sm">
+                                    Avoid outdoor exercise today. Children and elderly should remain indoors. Wear an N95 mask if you must go out due to high construction dust levels in your sector.
+                                </p>
+                            </div>
+
+                            <div class="bg-zinc-50 rounded-2xl p-5 border border-zinc-100">
+                                <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4">6-Hour Forecast</h4>
+                                <div class="sparkline w-full justify-between px-2">
+                                    <div class="spark-bar bg-aqi-maroon" style="height: 100%;"><div class="spark-tooltip">Now: 380</div></div>
+                                    <div class="spark-bar bg-aqi-maroon" style="height: 95%;"><div class="spark-tooltip">+1h: 375</div></div>
+                                    <div class="spark-bar bg-aqi-purple" style="height: 80%;"><div class="spark-tooltip">+2h: 290</div></div>
+                                    <div class="spark-bar bg-aqi-purple" style="height: 75%;"><div class="spark-tooltip">+3h: 270</div></div>
+                                    <div class="spark-bar bg-aqi-red" style="height: 60%;"><div class="spark-tooltip">+4h: 190</div></div>
+                                    <div class="spark-bar bg-aqi-orange" style="height: 45%;"><div class="spark-tooltip">+5h: 140</div></div>
+                                    <div class="spark-bar bg-aqi-yellow" style="height: 30%;"><div class="spark-tooltip">+6h: 90</div></div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-zinc-400 mt-2 font-mono">
+                                    <span>Now</span>
+                                    <span>+3h</span>
+                                    <span>+6h</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="architecture" class="py-24 bg-white">
+    <section class="py-16 bg-white border-t border-zinc-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-extrabold text-zinc-900 mb-4">System Architecture Overview</h2>
-                <p class="text-lg text-zinc-600 max-w-3xl mx-auto">A pure single-page application built on React 18 & Vite. Strict zero-backend constraints mean all data normalization and inference happen directly in the user's browser.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div class="p-8 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-brand/50 hover:shadow-xl transition duration-300">
-                    <div class="w-12 h-12 bg-zinc-900 text-white rounded-lg flex items-center justify-center text-xl mb-6 shadow-md">
-                        <i class="fa-solid fa-network-wired"></i>
-                    </div>
-                    <h4 class="text-xl font-bold mb-3 text-zinc-900">Distributed Data Ingestion</h4>
-                    <ul class="text-sm text-zinc-600 space-y-3">
-                        <li><strong class="text-zinc-900">OpenAQ v3 API:</strong> Primary source for hourly averages and live station data within the NCR bounding box.</li>
-                        <li><strong class="text-zinc-900">WAQI Fallback:</strong> Supplements coverage gaps in sparse areas.</li>
-                        <li><strong class="text-zinc-900">Haversine Snapping:</strong> Associates API station readings to the nearest of 272 ward centroids within a 5km radius.</li>
-                    </ul>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+                <div class="p-6 bg-zinc-50 rounded-xl border border-zinc-100">
+                    <div class="text-2xl text-brand mb-2"><i class="fa-solid fa-code"></i></div>
+                    <h4 class="font-bold text-sm text-zinc-900 mb-1">Zero Backend</h4>
+                    <p class="text-xs text-zinc-500">React 18 & Vite SPA. All API calls execute via browser fetch().</p>
                 </div>
-
-                <div class="p-8 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-brand/50 hover:shadow-xl transition duration-300">
-                    <div class="w-12 h-12 bg-brand text-white rounded-lg flex items-center justify-center text-xl mb-6 shadow-md shadow-brand/30">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-                    <h4 class="text-xl font-bold mb-3 text-zinc-900">Zero-Latency ML Inference</h4>
-                    <ul class="text-sm text-zinc-600 space-y-3">
-                        <li><strong class="text-zinc-900">Algorithm:</strong> Scikit-learn DecisionTreeClassifier trained on synthetic pollution signatures.</li>
-                        <li><strong class="text-zinc-900">Browser Deployment:</strong> Exported to ONNX via <code class="bg-zinc-200 px-1 rounded">sklearn2onnx</code> and loaded via <code class="bg-zinc-200 px-1 rounded">onnxruntime-web</code>.</li>
-                        <li><strong class="text-zinc-900">Performance:</strong> Executes via WASM backend, achieving target sub-50ms latency per ward.</li>
-                    </ul>
+                <div class="p-6 bg-zinc-50 rounded-xl border border-zinc-100">
+                    <div class="text-2xl text-brand mb-2"><i class="fa-solid fa-brain"></i></div>
+                    <h4 class="font-bold text-sm text-zinc-900 mb-1">ONNX Runtime</h4>
+                    <p class="text-xs text-zinc-500">Scikit-learn decision tree runs in-browser via WASM backend.</p>
                 </div>
-
-                <div class="p-8 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-brand/50 hover:shadow-xl transition duration-300">
-                    <div class="w-12 h-12 bg-blue-600 text-white rounded-lg flex items-center justify-center text-xl mb-6 shadow-md shadow-blue-600/30">
-                        <i class="fa-solid fa-sparkles"></i>
-                    </div>
-                    <h4 class="text-xl font-bold mb-3 text-zinc-900">Gemini 3.0 Flash Advisory</h4>
-                    <ul class="text-sm text-zinc-600 space-y-3">
-                        <li><strong class="text-zinc-900">Stateful Connection:</strong> The only external stateful call in the architecture.</li>
-                        <li><strong class="text-zinc-900">Structured JSON:</strong> Uses <code class="bg-zinc-200 px-1 rounded">responseMimeType</code> to guarantee actionable, parseable outputs.</li>
-                        <li><strong class="text-zinc-900">Streaming SSE:</strong> Ensures immediate UI feedback for policy recommendations.</li>
-                    </ul>
+                <div class="p-6 bg-zinc-50 rounded-xl border border-zinc-100">
+                    <div class="text-2xl text-brand mb-2"><i class="fa-solid fa-bolt"></i></div>
+                    <h4 class="font-bold text-sm text-zinc-900 mb-1">Gemini 3.0 Flash</h4>
+                    <p class="text-xs text-zinc-500">JSON schema output parsing for Citizen and Admin guidance.</p>
+                </div>
+                <div class="p-6 bg-zinc-50 rounded-xl border border-zinc-100">
+                    <div class="text-2xl text-brand mb-2"><i class="fa-solid fa-map"></i></div>
+                    <h4 class="font-bold text-sm text-zinc-900 mb-1">OpenAQ v3</h4>
+                    <p class="text-xs text-zinc-500">Real-time data snapped to 272 Delhi ward centroids.</p>
                 </div>
             </div>
         </div>
     </section>
-
-    <section id="team" class="py-24 bg-zinc-50 border-t border-zinc-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-extrabold mb-4 text-zinc-900">The Architects</h2>
-            <p class="text-zinc-600 mb-16 max-w-2xl mx-auto">VibeCoders is a collective of engineers dedicated to building intelligent solutions for India's toughest challenges.</p>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="bg-white p-6 rounded-2xl border border-zinc-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-16 h-16 bg-zinc-900 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">MJ</div>
-                    <h4 class="text-lg font-bold text-zinc-900">Mayank Jindal</h4>
-                    <p class="text-sm text-brand font-medium">IIT Jodhpur</p>
-                </div>
-                
-                <div class="bg-white p-6 rounded-2xl border border-zinc-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-16 h-16 bg-zinc-900 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">AS</div>
-                    <h4 class="text-lg font-bold text-zinc-900">Ansh Saraswat</h4>
-                    <p class="text-sm text-brand font-medium">Galgotias College of Engg. & Tech.</p>
-                </div>
-                
-                <div class="bg-white p-6 rounded-2xl border border-zinc-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-16 h-16 bg-zinc-900 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">RJ</div>
-                    <h4 class="text-lg font-bold text-zinc-900">Raj Jaiswal</h4>
-                    <p class="text-sm text-brand font-medium">Galgotias College of Engg. & Tech.</p>
-                </div>
-                
-                <div class="bg-white p-6 rounded-2xl border border-zinc-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-16 h-16 bg-zinc-900 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">SS</div>
-                    <h4 class="text-lg font-bold text-zinc-900">Saurav Singh</h4>
-                    <p class="text-sm text-brand font-medium">Galgotias College of Engg. & Tech.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-zinc-950 py-8 text-center text-zinc-500 border-t border-zinc-900">
-        <p class="text-sm">&copy; 2026 VibeCoders. All rights reserved.</p>
-    </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
-        // Tab Switching Logic
-        function switchTab(tabId) {
-            document.getElementById('tab-heatmap').classList.add('hidden');
-            document.getElementById('tab-classifier').classList.add('hidden');
-            document.getElementById('tab-impact').classList.add('hidden');
-            
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-brand/10', 'text-brand');
-                btn.classList.add('text-zinc-400');
-            });
+        // Toggle View Logic
+        function toggleView(viewType) {
+            const adminView = document.getElementById('view-admin');
+            const citizenView = document.getElementById('view-citizen');
+            const btnAdmin = document.getElementById('btn-admin');
+            const btnCitizen = document.getElementById('btn-citizen');
 
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-            
-            const activeBtn = document.getElementById('nav-' + tabId);
-            activeBtn.classList.remove('text-zinc-400');
-            activeBtn.classList.add('bg-brand/10', 'text-brand');
+            if (viewType === 'admin') {
+                // Show Admin
+                adminView.classList.remove('opacity-0', 'pointer-events-none');
+                adminView.classList.add('z-10');
+                citizenView.classList.add('opacity-0', 'pointer-events-none');
+                citizenView.classList.remove('z-10');
+                
+                // Style buttons
+                btnAdmin.className = "px-4 py-2 rounded-md bg-brand/20 text-brand font-bold shadow-sm transition";
+                btnCitizen.className = "px-4 py-2 rounded-md text-zinc-400 hover:text-white transition";
+                
+                // Refresh map size
+                setTimeout(() => { map.invalidateSize(); }, 300);
+            } else {
+                // Show Citizen
+                citizenView.classList.remove('opacity-0', 'pointer-events-none');
+                citizenView.classList.add('z-10');
+                adminView.classList.add('opacity-0', 'pointer-events-none');
+                adminView.classList.remove('z-10');
 
-            if (tabId === 'heatmap') {
-                setTimeout(() => { map.invalidateSize(); }, 100);
+                // Style buttons
+                btnCitizen.className = "px-4 py-2 rounded-md bg-brand/20 text-brand font-bold shadow-sm transition";
+                btnAdmin.className = "px-4 py-2 rounded-md text-zinc-400 hover:text-white transition";
             }
         }
 
@@ -391,57 +294,73 @@
             var darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; OpenStreetMap &copy; CARTO'
             });
-            
-            var streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap'
-            });
 
             map = L.map('ward-map', {
                 zoomControl: false,
                 layers: [darkLayer]
-            }).setView([28.6139, 77.2090], 11);
+            }).setView([28.68, 77.15], 11);
 
-            var baseMaps = {
-                "Dark Analytics Mode": darkLayer,
-                "Standard Street View": streetLayer
+            L.control.zoom({position: 'topright'}).addTo(map);
+
+            // CPCB Colors based on PRD requirements
+            const aqiColors = {
+                green: '#22c55e',   // <50
+                yellow: '#eab308',  // 51-100
+                orange: '#f97316',  // 101-150
+                red: '#ef4444',     // 151-200
+                purple: '#a855f7',  // 201-300
+                maroon: '#9f1239'   // >300
             };
-            L.control.layers(baseMaps, null, {position: 'topright'}).addTo(map);
-            L.control.zoom({position: 'bottomright'}).addTo(map);
 
-            // Real-world Delhi Data Simulation based on TRD Haversine Snap Concept
+            function getAqiColor(aqi) {
+                if (aqi > 300) return aqiColors.maroon;
+                if (aqi > 200) return aqiColors.purple;
+                if (aqi > 150) return aqiColors.red;
+                if (aqi > 100) return aqiColors.orange;
+                if (aqi > 50) return aqiColors.yellow;
+                return aqiColors.green;
+            }
+
+            // Real-world Delhi Data Simulation (Ward Centroids)
             var wardData = [
-                { name: "Anand Vihar (ISBT)", coords: [28.6469, 77.3160], aqi: 342, pm25: 198, type: "Vehicular/Dust" },
-                { name: "Punjabi Bagh", coords: [28.6685, 77.1326], aqi: 285, pm25: 145, type: "Vehicular" },
-                { name: "Okhla Phase II", coords: [28.5300, 77.2800], aqi: 310, pm25: 185, type: "Industrial" },
-                { name: "Bawana", coords: [28.7944, 77.0453], aqi: 275, pm25: 130, type: "Industrial/Biomass" },
-                { name: "R.K. Puram", coords: [28.5660, 77.1767], aqi: 195, pm25: 85, type: "Mixed Residential" }
+                { name: "Ward 94 (Rohini)", coords: [28.7366, 77.0818], aqi: 380, pm25: 210, pm10: 450, no2: 65, co: 1.1, source: "Construction Dust" },
+                { name: "Anand Vihar", coords: [28.6469, 77.3160], aqi: 245, pm25: 140, pm10: 190, no2: 85, co: 1.8, source: "Vehicular" },
+                { name: "Okhla Phase II", coords: [28.5300, 77.2800], aqi: 310, pm25: 185, pm10: 220, no2: 95, co: 2.1, source: "Industrial" },
+                { name: "Bawana", coords: [28.7944, 77.0453], aqi: 275, pm25: 130, pm10: 160, no2: 45, co: 1.5, source: "Biomass Burning" },
+                { name: "Siri Fort (Green Belt)", coords: [28.5521, 77.2185], aqi: 85, pm25: 45, pm10: 75, no2: 30, co: 0.5, source: "Mixed" }
             ];
 
             wardData.forEach(function(ward) {
-                // CPCB Breakpoints scale approximation
-                var color = ward.aqi > 300 ? '#ef4444' : (ward.aqi > 200 ? '#f97316' : (ward.aqi > 100 ? '#eab308' : '#22c55e'));
+                var color = getAqiColor(ward.aqi);
                 
                 var circle = L.circle(ward.coords, {
                     color: color,
                     fillColor: color,
-                    fillOpacity: 0.5,
-                    radius: 2000,
+                    fillOpacity: 0.6,
+                    radius: 2500,
                     weight: 2
                 }).addTo(map);
 
+                // Detail Panel / Tooltip (FR-02)
                 circle.bindPopup(`
-                    <div style="font-family: 'Inter', sans-serif; min-width: 150px;">
-                        <strong style="font-size: 15px; color: #18181b; display: block; border-bottom: 1px solid #e4e4e7; padding-bottom: 4px; margin-bottom: 8px;">${ward.name}</strong>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                            <span style="color: #52525b; font-size: 13px;">AQI (CPCB):</span>
-                            <strong style="color: ${color}; font-size: 14px;">${ward.aqi}</strong>
+                    <div style="font-family: 'Inter', sans-serif; min-width: 180px;">
+                        <strong style="font-size: 14px; color: #18181b; display: block; border-bottom: 1px solid #e4e4e7; padding-bottom: 4px; margin-bottom: 8px;">${ward.name}</strong>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="color: #52525b; font-size: 12px; font-weight: bold;">AQI:</span>
+                            <span style="background-color: ${color}; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 14px;">${ward.aqi}</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                            <span style="color: #52525b; font-size: 13px;">PM2.5:</span>
-                            <span style="color: #18181b; font-size: 13px; font-weight: 600;">${ward.pm25} µg/m³</span>
+                        
+                        <div style="font-family: 'Fira Code', monospace; font-size: 10px; color: #52525b; background: #f4f4f5; padding: 6px; border-radius: 4px; margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: space-between;"><span>PM2.5:</span> <strong>${ward.pm25}</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span>PM10:</span> <strong>${ward.pm10}</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span>NO2:</span> <strong>${ward.no2}</strong></div>
+                            <div style="display: flex; justify-content: space-between;"><span>CO:</span> <strong>${ward.co}</strong></div>
                         </div>
+
                         <div style="display: flex; justify-content: space-between; margin-top: 8px; padding-top: 4px; border-top: 1px dashed #e4e4e7;">
-                            <span style="color: #71717a; font-size: 11px; text-transform: uppercase;">Snapped via Haversine</span>
+                            <span style="color: #71717a; font-size: 10px; text-transform: uppercase;">Detected Source</span>
+                            <span style="color: #18181b; font-size: 10px; font-weight: 600;">${ward.source}</span>
                         </div>
                     </div>
                 `);
