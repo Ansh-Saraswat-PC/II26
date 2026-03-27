@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-black">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Problem | AirWatch Ward</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
+                    colors: { brand: { light: '#34d399', DEFAULT: '#10b981', dark: '#047857' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #000; color: #ededed; }
+        .glass-nav { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .bento-card { background: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 16px; transition: all 0.3s ease; }
+        .bento-card:hover { border-color: #333; transform: translateY(-2px); box-shadow: 0 10px 40px -10px rgba(16, 185, 129, 0.1); }
+        /* Glowing accent dot */
+        .glow-dot { box-shadow: 0 0 15px 2px rgba(16,185,129,0.6); }
+        
+        /* Specific Problem Page Accents */
+        .bento-danger:hover { border-color: #7f1d1d; box-shadow: 0 10px 40px -10px rgba(220, 38, 38, 0.15); }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand selection:text-white">
+
+    <nav class="glass-nav fixed w-full z-50 top-0">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 text-white font-medium tracking-wide">
+                <div class="w-2 h-2 rounded-full bg-brand glow-dot animate-pulse"></div>
+                AirWatch Ward
+            </a>
+            <div class="hidden md:flex space-x-6 text-sm text-zinc-400 font-medium">
+                <a href="problem.html" class="text-white">Problem</a>
+                <a href="index.html" class="hover:text-white transition">Solution</a>
+                <a href="tech.html" class="hover:text-white transition">Tech Stack</a>
+                <a href="unique.html" class="hover:text-white transition">USPs</a>
+                <a href="future.html" class="hover:text-white transition">Future</a>
+                <a href="prototype.html" class="px-4 py-1.5 rounded-full bg-white text-black hover:bg-zinc-200 transition font-semibold">Demo Prototype</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-24 px-6 max-w-7xl mx-auto">
+        
+        <header class="mb-16">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-500">
+                The Crisis.
+            </h1>
+            <p class="text-xl text-zinc-400 max-w-2xl leading-relaxed">
+                India’s cities report a single citywide AQI average. This statistical flattening masks dangerous, ward-level pollution spikes, leaving vulnerable populations completely unprotected.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="bento-card bento-danger md:col-span-3 p-8 md:p-12 relative overflow-hidden group border-red-900/30">
+                <div class="absolute -right-20 -top-20 w-96 h-96 bg-red-900/10 rounded-full blur-[100px] pointer-events-none transition duration-700 group-hover:bg-red-900/20"></div>
+                
+                <div class="relative z-10 flex flex-col md:flex-row gap-10 items-center justify-between">
+                    <div class="flex-shrink-0">
+                        <div class="font-mono text-sm mb-4 text-red-500 font-medium tracking-wider uppercase">
+                            <i class="fa-solid fa-triangle-exclamation mr-2"></i> Critical Impact
+                        </div>
+                        <h3 class="text-6xl md:text-8xl font-black text-white mb-2 tracking-tighter">54,000<span class="text-red-500">+</span></h3>
+                        <p class="text-xl text-zinc-400 font-medium">Premature deaths annually in Delhi.</p>
+                    </div>
+                    <div class="w-full md:w-px md:h-32 bg-zinc-800"></div>
+                    <p class="text-zinc-400 leading-relaxed max-w-xl text-lg">
+                        A resident living 400 metres from a construction site, landfill, or biomass-burning zone receives the <strong class="text-white">exact same advisory</strong> as a resident in a green belt across the city. The human cost of this generalized data is catastrophic.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bento-card p-8 group">
+                <div class="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300 mb-6 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-map-location-dot text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-white">Spatial Masking</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    High-AQI micro-zones are averaged away by current state dashboards. A ward recording <span class="text-red-400 font-mono">AQI 380</span> looks mathematically identical to a ward recording <span class="text-green-400 font-mono">AQI 120</span> in city-level aggregations.
+                </p>
+            </div>
+
+            <div class="bento-card p-8 group">
+                <div class="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300 mb-6 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-magnifying-glass-chart text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-white">Source Ambiguity</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    Existing monitoring stations report <em class="text-zinc-200">what</em> pollution levels are, not <em class="text-zinc-200">why</em> they are elevated. Without accurate source attribution, municipal administrators cannot select the correct localized intervention.
+                </p>
+            </div>
+
+            <div class="bento-card p-8 group">
+                <div class="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300 mb-6 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-white">Reactive Governance</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    Current public health advisories are issued hours after a spike has occurred, when the physiological damage is already being done. There is no mechanism for forward-looking, proactive alerts.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

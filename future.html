@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-black">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Roadmap | AirWatch Ward</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
+                    colors: { brand: { light: '#34d399', DEFAULT: '#10b981', dark: '#047857' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #000; color: #ededed; }
+        .glass-nav { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .bento-card { background: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 16px; transition: all 0.3s ease; }
+        .bento-card:hover { border-color: #333; transform: translateY(-2px); box-shadow: 0 10px 40px -10px rgba(16, 185, 129, 0.1); }
+        .glow-dot { box-shadow: 0 0 15px 2px rgba(16,185,129,0.6); }
+        
+        /* Future Page Accents (Violet/Indigo vibe) */
+        .bento-future:hover { border-color: #8b5cf6; box-shadow: 0 10px 40px -10px rgba(139, 92, 246, 0.15); }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand selection:text-white">
+
+    <nav class="glass-nav fixed w-full z-50 top-0">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 text-white font-medium tracking-wide">
+                <div class="w-2 h-2 rounded-full bg-brand glow-dot animate-pulse"></div>
+                AirWatch Ward
+            </a>
+            <div class="hidden md:flex space-x-6 text-sm text-zinc-400 font-medium">
+                <a href="problem.html" class="hover:text-white transition">Problem</a>
+                <a href="index.html" class="hover:text-white transition">Solution</a>
+                <a href="tech.html" class="hover:text-white transition">Tech Stack</a>
+                <a href="unique.html" class="hover:text-white transition">USPs</a>
+                <a href="future.html" class="text-white">Future</a>
+                <a href="prototype.html" class="px-4 py-1.5 rounded-full bg-white text-black hover:bg-zinc-200 transition font-semibold">Demo Prototype</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-24 px-6 max-w-7xl mx-auto">
+        
+        <header class="mb-16">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-900/30 border border-violet-800/50 text-violet-300 text-sm font-medium mb-6">
+                <i class="fa-solid fa-rocket"></i> v2.0 Roadmap
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-500">
+                Beyond the Hackathon.
+            </h1>
+            <p class="text-xl text-zinc-400 max-w-2xl leading-relaxed">
+                AirWatch Ward is built with an architecture designed to scale. Our post-hackathon trajectory transforms this prototype from a localized dashboard into a national urban utility.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="bento-card bento-future md:col-span-2 p-8 relative overflow-hidden group">
+                <div class="absolute right-0 top-0 p-8 opacity-10 group-hover:opacity-20 transition text-8xl text-violet-500"><i class="fa-brands fa-whatsapp"></i></div>
+                <div class="font-mono text-xs text-violet-400 mb-4 uppercase tracking-wider">Accessibility</div>
+                <h3 class="text-3xl font-bold mb-4 text-white">Omnichannel Push Notifications</h3>
+                <p class="text-zinc-400 leading-relaxed mb-6 max-w-lg">
+                    Not every citizen will proactively check a web dashboard. V2.0 integrates WhatsApp Business API and SMS gateways to push Gemini-generated, localized health advisories directly to residents' phones when their specific ward crosses critical thresholds.
+                </p>
+            </div>
+
+            <div class="bento-card bento-future p-8 group">
+                <div class="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-violet-400 mb-6 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-globe text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-white">Multi-City Expansion</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    Scaling beyond Delhi's 272 wards. Because we rely on Haversine mathematical snapping and open APIs, expanding to Mumbai, Kanpur, or Patna requires only the integration of new municipal GeoJSON files.
+                </p>
+            </div>
+
+            <div class="bento-card bento-future p-8 group">
+                <div class="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-violet-400 mb-6 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-microchip text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-white">Production IoT Integration</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    Transitioning from simulated fallback data and third-party APIs to a proprietary network of low-cost, production-grade IoT sensors deployed directly on municipal infrastructure (e.g., streetlights).
+                </p>
+            </div>
+
+            <div class="bento-card bento-future md:col-span-2 p-8 flex flex-col justify-center relative overflow-hidden group">
+                <div class="relative z-10">
+                    <div class="font-mono text-xs text-violet-400 mb-4 uppercase tracking-wider">Data Science</div>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Long-Term Trend Analytics</h3>
+                    <p class="text-zinc-400 leading-relaxed max-w-xl mb-6">
+                        Building a persistent backend architecture to store multi-month views. This will allow researchers to track seasonal events (like crop burning or Diwali) and correlate our AI's source attributions with respiratory hospital admission rates over time.
+                    </p>
+                    
+                    <div class="flex items-end gap-2 h-16 w-full max-w-md opacity-60">
+                        <div class="w-1/6 bg-violet-900 rounded-t h-[30%]"></div>
+                        <div class="w-1/6 bg-violet-800 rounded-t h-[45%]"></div>
+                        <div class="w-1/6 bg-violet-700 rounded-t h-[80%]"></div>
+                        <div class="w-1/6 bg-violet-600 rounded-t h-[60%]"></div>
+                        <div class="w-1/6 bg-violet-500 rounded-t h-[90%]"></div>
+                        <div class="w-1/6 bg-violet-400 rounded-t h-[100%]"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

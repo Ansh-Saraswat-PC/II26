@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black overflow-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Prototype | AirWatch Ward</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+    <style>
+        body { font-family: 'Inter', sans-serif; color: #ededed; }
+        .map-container { height: calc(100vh - 64px); }
+        .hud-panel { background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(16px); border: 1px solid #27272a; }
+        .leaflet-control-zoom { border: 1px solid #27272a !important; }
+        .leaflet-bar a { background-color: #0a0a0a !important; color: #ededed !important; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="h-16 bg-[#050505] border-b border-zinc-800 flex items-center justify-between px-6 z-50 relative">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="text-zinc-400 hover:text-white transition"><i class="fa-solid fa-arrow-left"></i> Exit Demo</a>
+            <div class="h-4 w-px bg-zinc-800"></div>
+            <span class="font-mono text-sm text-brand"><i class="fa-solid fa-circle text-[8px] animate-pulse mr-2"></i>Live OpenAQ Feed</span>
+        </div>
+        <div class="flex bg-zinc-900 rounded-md p-1 border border-zinc-800 text-sm">
+            <button class="px-4 py-1.5 rounded bg-zinc-800 text-white shadow">Source Classifier</button>
+            <button class="px-4 py-1.5 rounded text-zinc-400 hover:text-white">Impact Preview</button>
+        </div>
+    </nav>
+
+    <div class="relative w-full map-container">
+        <div id="demo-map" class="w-full h-full z-0 bg-zinc-950"></div>
+
+        <div class="hud-panel absolute top-6 left-6 w-80 rounded-xl p-5 z-[400] shadow-2xl">
+            <h3 class="font-bold text-lg mb-4 flex justify-between items-center">
+                System Status <i class="fa-solid fa-microchip text-zinc-500"></i>
+            </h3>
+            <div class="space-y-3 font-mono text-xs">
+                <div class="flex justify-between border-b border-zinc-800 pb-2">
+                    <span class="text-zinc-400">Model</span><span class="text-brand">ONNX / Browser</span>
+                </div>
+                <div class="flex justify-between border-b border-zinc-800 pb-2">
+                    <span class="text-zinc-400">Latency</span><span class="text-white">42ms</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-zinc-400">Advisory Engine</span><span class="text-blue-400">Gemini 3.0</span>
+                </div>
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-zinc-800">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-2">Policy Impact Preview </div>
+                <div class="bg-zinc-900 rounded p-3 border border-zinc-800">
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-sm">Water Sprinklers</span>
+                        <span class="text-brand font-bold">-45 AQI</span>
+                    </div>
+                    <div class="w-full bg-black rounded-full h-1.5"><div class="bg-brand h-1.5 rounded-full" style="width: 45%"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-panel absolute bottom-6 right-6 w-96 rounded-xl p-5 z-[400] shadow-2xl border-l-2 border-l-red-500">
+            <div class="flex justify-between items-start mb-3">
+                <span class="bg-red-500/20 text-red-500 text-[10px] px-2 py-1 rounded uppercase tracking-wider font-bold">Spike Detected</span>
+                <span class="font-mono text-xs text-zinc-500">Ward: Rohini</span>
+            </div>
+            <h4 class="text-xl font-bold mb-1">AQI 380 <span class="text-sm font-normal text-zinc-400">(Severe)</span></h4>
+            
+            <div class="my-4 p-3 bg-zinc-900 rounded border border-zinc-800 text-sm">
+                <span class="text-zinc-500 text-xs block mb-1">AI Source Detection [cite: 35]</span>
+                <strong class="text-white"><i class="fa-solid fa-truck-ramp-box text-amber-500 mr-2"></i> Construction Dust</strong>
+            </div>
+
+            <p class="text-sm text-zinc-300 leading-relaxed font-sans">
+                <span class="text-brand font-semibold text-xs uppercase block mb-1">Citizen Advisory [cite: 36]</span>
+                "Avoid outdoor exercise. Wear N95."
+            </p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var map = L.map('demo-map', { zoomControl: false }).setView([28.68, 77.15], 11);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+            L.control.zoom({position: 'topright'}).addTo(map);
+
+            // Mock Data
+            var wardData = [
+                { coords: [28.7366, 77.0818], aqi: 380, color: '#ef4444' }, // Rohini
+                { coords: [28.5300, 77.2800], aqi: 310, color: '#f97316' }, // Okhla
+                { coords: [28.5521, 77.2185], aqi: 85, color: '#22c55e' }   // Green Belt
+            ];
+
+            wardData.forEach(function(ward) {
+                L.circle(ward.coords, {
+                    color: ward.color,
+                    fillColor: ward.color,
+                    fillOpacity: 0.4,
+                    radius: 2500,
+                    weight: 1
+                }).addTo(map);
+            });
+        });
+    </script>
+</body>
+</html>

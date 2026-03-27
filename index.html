@@ -1,371 +1,103 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth bg-black">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AirWatch Ward | VibeCoders</title>
+    <title>Solution | AirWatch Ward</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['Fira Code', 'monospace'],
-                    },
-                    colors: {
-                        brand: {
-                            light: '#34d399', 
-                            DEFAULT: '#10b981', 
-                            dark: '#047857', 
-                        },
-                        aqi: {
-                            green: '#22c55e',   // <50
-                            yellow: '#eab308',  // 51-100
-                            orange: '#f97316',  // 101-150
-                            red: '#ef4444',     // 151-200
-                            purple: '#a855f7',  // 201-300
-                            maroon: '#9f1239'   // >300
-                        }
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
+                    colors: { brand: { light: '#34d399', DEFAULT: '#10b981', dark: '#047857' } }
                 }
             }
         }
     </script>
     <style>
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #18181b; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
-        .glass-panel { background: rgba(24, 24, 27, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        .leaflet-control-layers { background: #18181b !important; color: #e4e4e7 !important; border: 1px solid #3f3f46 !important; border-radius: 8px !important; }
-        
-        /* CSS Sparkline for 6h forecast */
-        .sparkline { display: flex; align-items: flex-end; gap: 4px; height: 40px; margin-top: 8px; }
-        .spark-bar { width: 12px; border-radius: 2px 2px 0 0; transition: height 0.3s ease; position: relative; group-hover: opacity-80; }
-        .spark-tooltip { display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #18181b; color: #fff; font-size: 10px; padding: 2px 4px; border-radius: 4px; margin-bottom: 4px; white-space: nowrap; z-index: 10;}
-        .spark-bar:hover .spark-tooltip { display: block; }
+        body { background-color: #000; color: #ededed; }
+        .glass-nav { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .bento-card { background: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 16px; transition: all 0.3s ease; }
+        .bento-card:hover { border-color: #333; transform: translateY(-2px); box-shadow: 0 10px 40px -10px rgba(16, 185, 129, 0.1); }
+        /* Glowing accent dot */
+        .glow-dot { box-shadow: 0 0 15px 2px rgba(16,185,129,0.6); }
     </style>
 </head>
-<body class="bg-zinc-50 text-zinc-900 font-sans antialiased selection:bg-brand selection:text-white">
+<body class="antialiased selection:bg-brand selection:text-white">
 
-    <nav class="glass-panel fixed w-full z-50 top-0 border-b border-zinc-800/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex-shrink-0 flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-light to-brand-dark flex items-center justify-center text-white shadow-lg shadow-brand/30">
-                        <i class="fa-solid fa-wind"></i>
-                    </div>
-                    <span class="font-bold text-xl tracking-tight text-white">AirWatch Ward <span class="text-xs font-mono text-brand border border-brand/30 px-1.5 py-0.5 rounded ml-2">v1.0</span></span>
-                </div>
-                <div class="hidden md:flex space-x-8">
-                    <a href="#problem" class="text-sm font-medium text-zinc-300 hover:text-brand transition">The Problem</a>
-                    <a href="#prototype" class="text-sm font-medium text-brand hover:text-brand-light transition">Dual-Audience Demo</a>
-                    <a href="#team" class="text-sm font-medium text-zinc-300 hover:text-brand transition">Team</a>
-                </div>
+    <nav class="glass-nav fixed w-full z-50 top-0">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 text-white font-medium tracking-wide">
+                <div class="w-2 h-2 rounded-full bg-brand glow-dot animate-pulse"></div>
+                AirWatch Ward
+            </a>
+            <div class="hidden md:flex space-x-6 text-sm text-zinc-400 font-medium">
+                <a href="problem.html" class="hover:text-white transition">Problem</a>
+                <a href="index.html" class="text-white">Solution</a>
+                <a href="tech.html" class="hover:text-white transition">Tech Stack</a>
+                <a href="unique.html" class="hover:text-white transition">USPs</a>
+                <a href="future.html" class="hover:text-white transition">Future</a>
+                <a href="prototype.html" class="px-4 py-1.5 rounded-full bg-white text-black hover:bg-zinc-200 transition font-semibold">Demo Prototype</a>
             </div>
         </div>
     </nav>
 
-    <section class="relative pt-40 pb-20 bg-zinc-950 overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand/20 rounded-full blur-[120px] pointer-events-none"></div>
+    <main class="pt-32 pb-24 px-6 max-w-7xl mx-auto">
         
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/50 border border-zinc-700 text-brand-light text-sm font-medium mb-8 backdrop-blur-md">
-                <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-                India Innovates 2026 Submission
-            </div>
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 text-white leading-tight">
-                Hyper-Local <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-light to-brand">AQI Intelligence</span>
+        <header class="mb-16">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-500">
+                The Solution.
             </h1>
-            <p class="text-xl md:text-2xl text-zinc-400 max-w-3xl mx-auto font-light">
-                A zero-backend SPA mapping air quality at the ward level. Serving citizens with plain-language health guidance, and administrators with AI-powered policy projections.
+            <p class="text-xl text-zinc-400 max-w-2xl leading-relaxed">
+                A hyper-local AQI intelligence platform mapping air quality at the ward level in real time[cite: 14]. Moving from reactive averages to proactive, AI-driven interventions.
             </p>
-        </div>
-    </section>
+        </header>
 
-    <section id="problem" class="py-12 bg-zinc-950 border-b border-zinc-900">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-zinc-400 text-lg max-w-4xl mx-auto">
-                <strong class="text-white">Spatial Masking:</strong> High-AQI micro-zones near construction or biomass burning are averaged away in city-level dashboards. Delhi alone sees 54,000+ premature deaths annually linked to air pollution [cite: 12] — a crisis that proactive, ward-level governance can mitigate.
-            </p>
-        </div>
-    </section>
-
-    <section id="prototype" class="py-24 bg-zinc-900 text-zinc-300">
-        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
-                <div>
-                    <h2 class="text-sm font-bold text-brand tracking-wider uppercase mb-2">Interactive Demo</h2>
-                    <h3 class="text-3xl font-extrabold text-white">Platform v1.0</h3>
-                </div>
-                
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <div class="bg-zinc-950 p-1 rounded-lg border border-zinc-700 flex text-sm">
-                        <button class="px-4 py-2 rounded-md bg-zinc-800 text-white font-medium shadow-sm transition"><i class="fa-solid fa-satellite-dish text-brand mr-2 animate-pulse"></i>Live (OpenAQ)</button>
-                        <button class="px-4 py-2 rounded-md text-zinc-400 hover:text-white transition"><i class="fa-solid fa-vial mr-2"></i>Simulated (10s)</button>
-                    </div>
+            <div class="bento-card md:col-span-2 p-8 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition text-6xl text-brand"><i class="fa-solid fa-brain"></i></div>
+                <h3 class="text-2xl font-bold mb-3">Rule-Based ML Classifier</h3>
+                <p class="text-zinc-400 leading-relaxed mb-6 max-w-md">
+                    Trains on time-of-day, ward type metadata, and sensor spike patterns to automatically classify pollution sources — distinguishing between construction dust, biomass burning, and vehicular emissions[cite: 15].
+                </p>
+                <a href="tech.html" class="text-brand text-sm font-semibold hover:underline flex items-center gap-2">View Architecture <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
 
-                    <div class="bg-zinc-950 p-1 rounded-lg border border-zinc-700 flex text-sm">
-                        <button onclick="toggleView('admin')" id="btn-admin" class="px-4 py-2 rounded-md bg-brand/20 text-brand font-bold shadow-sm transition"><i class="fa-solid fa-shield-halved mr-2"></i>Admin View</button>
-                        <button onclick="toggleView('citizen')" id="btn-citizen" class="px-4 py-2 rounded-md text-zinc-400 hover:text-white transition"><i class="fa-solid fa-mobile-screen mr-2"></i>Citizen View</button>
-                    </div>
+            <div class="bento-card p-8">
+                <div class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300 mb-6">
+                    <i class="fa-solid fa-stopwatch"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Live Simulation</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    A dedicated mode visualises AQI evolution across wards every 10 seconds[cite: 18].
+                </p>
+            </div>
+
+            <div class="bento-card p-8">
+                <div class="text-brand mb-4 text-2xl"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3 class="text-xl font-bold mb-2">Admin Policy Hub</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    Auto-generated, ward-specific recommendations like deploying water sprinklers or restricting heavy vehicles[cite: 16].
+                </p>
+            </div>
+
+            <div class="bento-card md:col-span-2 p-8 flex flex-col justify-center">
+                <h3 class="text-xl font-bold mb-4">Citizen Health Advisories</h3>
+                <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-4 font-mono text-sm text-zinc-300">
+                    <span class="text-brand">Gemini 3.0 Flash Output:</span><br>
+                    <span class="text-zinc-500">// Triggered by localized AQI thresholds [cite: 17]</span><br>
+                    "Avoid outdoor exercise today. High particulate matter detected from localized construction. Wear N95."
                 </div>
             </div>
 
-            <div id="app-container" class="rounded-2xl border border-zinc-700 bg-zinc-950 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col h-[800px] ring-1 ring-white/10 relative transition-all duration-500">
-                
-                <div id="view-admin" class="flex-1 flex flex-col h-full w-full absolute inset-0 z-10 transition-opacity duration-300">
-                    <div class="h-14 bg-zinc-800 border-b border-zinc-700 flex items-center justify-between px-6 shrink-0">
-                        <div class="flex items-center gap-4">
-                            <span class="font-bold text-white uppercase tracking-wider text-sm"><i class="fa-solid fa-building-shield text-brand mr-2"></i>MCD Environment Dashboard</span>
-                        </div>
-                        <div class="flex items-center gap-6 text-sm font-mono text-zinc-400">
-                            <span>OpenAQ v3</span> | <span>ONNX Web Runtime</span> | <span>Gemini 3.0 Flash</span>
-                        </div>
-                    </div>
-
-                    <div class="flex-1 flex relative overflow-hidden">
-                        <div class="flex-1 relative z-0">
-                            <div id="ward-map" class="w-full h-full"></div>
-                            
-                            <div class="absolute bottom-6 left-6 w-[400px] glass-panel rounded-xl p-5 shadow-2xl z-[400] border-t-4 border-aqi-maroon">
-                                <div class="flex justify-between items-center mb-4">
-                                    <h4 class="font-bold text-white flex items-center gap-2 text-sm">
-                                        <i class="fa-solid fa-sparkles text-brand"></i> Actionable Policy Generator
-                                    </h4>
-                                    <span class="text-xs bg-zinc-800 text-zinc-300 px-2 py-1 rounded font-mono border border-zinc-700">Ward 94 (Rohini)</span>
-                                </div>
-                                
-                                <div class="space-y-4 text-sm">
-                                    <div class="flex justify-between items-center bg-zinc-900/80 p-2 rounded border border-zinc-700">
-                                        <span class="text-zinc-400">Source: <strong class="text-red-400">Construction Dust</strong></span>
-                                        <span class="text-zinc-400">Confidence: <strong class="text-white">87%</strong></span>
-                                        <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded text-xs font-bold uppercase">Critical Urgency</span>
-                                    </div>
-
-                                    <div>
-                                        <strong class="text-zinc-300 block mb-1 text-xs uppercase tracking-wider">Policy Recommendation:</strong>
-                                        <p class="text-zinc-300 leading-relaxed font-sans text-sm bg-zinc-800/50 p-3 rounded border border-zinc-700">
-                                            Deploy mechanised water sprinklers immediately to Rohini Sector 11 ring road. Halt all excavation at the Phase 3 residential site for the next 12 hours.
-                                        </p>
-                                    </div>
-
-                                    <div class="flex justify-between items-center border-t border-zinc-700 pt-3">
-                                        <span class="text-xs text-zinc-400 uppercase">Projected AQI Reduction:</span>
-                                        <span class="text-brand font-bold text-lg">-35 Units <span class="text-xs font-normal text-zinc-500">(in 2 hours)</span></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="view-citizen" class="h-full w-full absolute inset-0 z-0 opacity-0 pointer-events-none bg-zinc-950 flex items-center justify-center transition-opacity duration-300">
-                    
-                    <div class="w-[375px] h-[700px] bg-white rounded-[2.5rem] border-[8px] border-zinc-800 shadow-2xl relative overflow-hidden flex flex-col font-sans text-zinc-900">
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-zinc-800 rounded-b-xl z-50"></div>
-                        
-                        <div class="pt-12 pb-4 px-6 bg-gradient-to-b from-blue-50 to-white">
-                            <div class="flex justify-between items-center mb-6">
-                                <i class="fa-solid fa-bars text-zinc-600"></i>
-                                <span class="font-bold text-brand flex items-center gap-2"><i class="fa-solid fa-wind"></i> AirWatch</span>
-                                <i class="fa-solid fa-bell text-zinc-600"></i>
-                            </div>
-                            <h2 class="text-2xl font-extrabold text-zinc-900">Ward 94</h2>
-                            <p class="text-zinc-500 text-sm"><i class="fa-solid fa-location-dot mr-1"></i> Rohini, Delhi</p>
-                        </div>
-
-                        <div class="px-6 flex-1 overflow-y-auto pb-8">
-                            <div class="w-48 h-48 rounded-full border-[12px] border-aqi-maroon flex flex-col items-center justify-center mx-auto my-6 shadow-lg shadow-aqi-maroon/20">
-                                <span class="text-5xl font-black text-zinc-900">380</span>
-                                <span class="text-aqi-maroon font-bold uppercase tracking-wide mt-1">Severe</span>
-                            </div>
-
-                            <div class="bg-red-50 rounded-2xl p-5 mb-6 border border-red-100">
-                                <div class="flex items-center gap-2 mb-2 text-red-600 font-bold">
-                                    <i class="fa-solid fa-user-doctor"></i> Health Advisory
-                                </div>
-                                <p class="text-zinc-800 leading-relaxed text-sm">
-                                    Avoid outdoor exercise today. Children and elderly should remain indoors. Wear an N95 mask if you must go out due to high construction dust levels in your sector.
-                                </p>
-                            </div>
-
-                            <div class="bg-zinc-50 rounded-2xl p-5 border border-zinc-100">
-                                <h4 class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4">6-Hour Forecast</h4>
-                                <div class="sparkline w-full justify-between px-2">
-                                    <div class="spark-bar bg-aqi-maroon" style="height: 100%;"><div class="spark-tooltip">Now: 380</div></div>
-                                    <div class="spark-bar bg-aqi-maroon" style="height: 95%;"><div class="spark-tooltip">+1h: 375</div></div>
-                                    <div class="spark-bar bg-aqi-purple" style="height: 80%;"><div class="spark-tooltip">+2h: 290</div></div>
-                                    <div class="spark-bar bg-aqi-purple" style="height: 75%;"><div class="spark-tooltip">+3h: 270</div></div>
-                                    <div class="spark-bar bg-aqi-red" style="height: 60%;"><div class="spark-tooltip">+4h: 190</div></div>
-                                    <div class="spark-bar bg-aqi-orange" style="height: 45%;"><div class="spark-tooltip">+5h: 140</div></div>
-                                    <div class="spark-bar bg-aqi-yellow" style="height: 30%;"><div class="spark-tooltip">+6h: 90</div></div>
-                                </div>
-                                <div class="flex justify-between text-[10px] text-zinc-400 mt-2 font-mono">
-                                    <span>Now</span>
-                                    <span>+3h</span>
-                                    <span>+6h</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
         </div>
-    </section>
+    </main>
 
-    <section class="py-16 bg-white border-t border-zinc-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
-                <div class="p-6 bg-zinc-50 rounded-xl border border-zinc-100">
-                    <div class="text-2xl text-brand mb-2"><i class="fa-solid fa-code"></i></div>
-                    <h4 class="font-bold text-sm text-zinc-900 mb-1">Zero Backend</h4>
-                    <p class="text-xs text-zinc-500">React 18 & Vite SPA. All API calls execute via browser fetch().</p>
-                </div>
-                <div class="p-6 bg-zinc-50 rounded-xl border border-zinc-100">
-                    <div class="text-2xl text-brand mb-2"><i class="fa-solid fa-brain"></i></div>
-                    <h4 class="font-bold text-sm text-zinc-900 mb-1">ONNX Runtime</h4>
-                    <p class="text-xs text-zinc-500">Scikit-learn decision tree runs in-browser via WASM backend.</p>
-                </div>
-                <div class="p-6 bg-zinc-50 rounded-xl border border-zinc-100">
-                    <div class="text-2xl text-brand mb-2"><i class="fa-solid fa-bolt"></i></div>
-                    <h4 class="font-bold text-sm text-zinc-900 mb-1">Gemini 3.0 Flash</h4>
-                    <p class="text-xs text-zinc-500">JSON schema output parsing for Citizen and Admin guidance.</p>
-                </div>
-                <div class="p-6 bg-zinc-50 rounded-xl border border-zinc-100">
-                    <div class="text-2xl text-brand mb-2"><i class="fa-solid fa-map"></i></div>
-                    <h4 class="font-bold text-sm text-zinc-900 mb-1">OpenAQ v3</h4>
-                    <p class="text-xs text-zinc-500">Real-time data snapped to 272 Delhi ward centroids.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    <script>
-        // Toggle View Logic
-        function toggleView(viewType) {
-            const adminView = document.getElementById('view-admin');
-            const citizenView = document.getElementById('view-citizen');
-            const btnAdmin = document.getElementById('btn-admin');
-            const btnCitizen = document.getElementById('btn-citizen');
-
-            if (viewType === 'admin') {
-                // Show Admin
-                adminView.classList.remove('opacity-0', 'pointer-events-none');
-                adminView.classList.add('z-10');
-                citizenView.classList.add('opacity-0', 'pointer-events-none');
-                citizenView.classList.remove('z-10');
-                
-                // Style buttons
-                btnAdmin.className = "px-4 py-2 rounded-md bg-brand/20 text-brand font-bold shadow-sm transition";
-                btnCitizen.className = "px-4 py-2 rounded-md text-zinc-400 hover:text-white transition";
-                
-                // Refresh map size
-                setTimeout(() => { map.invalidateSize(); }, 300);
-            } else {
-                // Show Citizen
-                citizenView.classList.remove('opacity-0', 'pointer-events-none');
-                citizenView.classList.add('z-10');
-                adminView.classList.add('opacity-0', 'pointer-events-none');
-                adminView.classList.remove('z-10');
-
-                // Style buttons
-                btnCitizen.className = "px-4 py-2 rounded-md bg-brand/20 text-brand font-bold shadow-sm transition";
-                btnAdmin.className = "px-4 py-2 rounded-md text-zinc-400 hover:text-white transition";
-            }
-        }
-
-        // Leaflet Map Initialization
-        var map;
-        document.addEventListener("DOMContentLoaded", function() {
-            
-            var darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap &copy; CARTO'
-            });
-
-            map = L.map('ward-map', {
-                zoomControl: false,
-                layers: [darkLayer]
-            }).setView([28.68, 77.15], 11);
-
-            L.control.zoom({position: 'topright'}).addTo(map);
-
-            // CPCB Colors based on PRD requirements
-            const aqiColors = {
-                green: '#22c55e',   // <50
-                yellow: '#eab308',  // 51-100
-                orange: '#f97316',  // 101-150
-                red: '#ef4444',     // 151-200
-                purple: '#a855f7',  // 201-300
-                maroon: '#9f1239'   // >300
-            };
-
-            function getAqiColor(aqi) {
-                if (aqi > 300) return aqiColors.maroon;
-                if (aqi > 200) return aqiColors.purple;
-                if (aqi > 150) return aqiColors.red;
-                if (aqi > 100) return aqiColors.orange;
-                if (aqi > 50) return aqiColors.yellow;
-                return aqiColors.green;
-            }
-
-            // Real-world Delhi Data Simulation (Ward Centroids)
-            var wardData = [
-                { name: "Ward 94 (Rohini)", coords: [28.7366, 77.0818], aqi: 380, pm25: 210, pm10: 450, no2: 65, co: 1.1, source: "Construction Dust" },
-                { name: "Anand Vihar", coords: [28.6469, 77.3160], aqi: 245, pm25: 140, pm10: 190, no2: 85, co: 1.8, source: "Vehicular" },
-                { name: "Okhla Phase II", coords: [28.5300, 77.2800], aqi: 310, pm25: 185, pm10: 220, no2: 95, co: 2.1, source: "Industrial" },
-                { name: "Bawana", coords: [28.7944, 77.0453], aqi: 275, pm25: 130, pm10: 160, no2: 45, co: 1.5, source: "Biomass Burning" },
-                { name: "Siri Fort (Green Belt)", coords: [28.5521, 77.2185], aqi: 85, pm25: 45, pm10: 75, no2: 30, co: 0.5, source: "Mixed" }
-            ];
-
-            wardData.forEach(function(ward) {
-                var color = getAqiColor(ward.aqi);
-                
-                var circle = L.circle(ward.coords, {
-                    color: color,
-                    fillColor: color,
-                    fillOpacity: 0.6,
-                    radius: 2500,
-                    weight: 2
-                }).addTo(map);
-
-                // Detail Panel / Tooltip (FR-02)
-                circle.bindPopup(`
-                    <div style="font-family: 'Inter', sans-serif; min-width: 180px;">
-                        <strong style="font-size: 14px; color: #18181b; display: block; border-bottom: 1px solid #e4e4e7; padding-bottom: 4px; margin-bottom: 8px;">${ward.name}</strong>
-                        
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span style="color: #52525b; font-size: 12px; font-weight: bold;">AQI:</span>
-                            <span style="background-color: ${color}; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 14px;">${ward.aqi}</span>
-                        </div>
-                        
-                        <div style="font-family: 'Fira Code', monospace; font-size: 10px; color: #52525b; background: #f4f4f5; padding: 6px; border-radius: 4px; margin-bottom: 8px;">
-                            <div style="display: flex; justify-content: space-between;"><span>PM2.5:</span> <strong>${ward.pm25}</strong></div>
-                            <div style="display: flex; justify-content: space-between;"><span>PM10:</span> <strong>${ward.pm10}</strong></div>
-                            <div style="display: flex; justify-content: space-between;"><span>NO2:</span> <strong>${ward.no2}</strong></div>
-                            <div style="display: flex; justify-content: space-between;"><span>CO:</span> <strong>${ward.co}</strong></div>
-                        </div>
-
-                        <div style="display: flex; justify-content: space-between; margin-top: 8px; padding-top: 4px; border-top: 1px dashed #e4e4e7;">
-                            <span style="color: #71717a; font-size: 10px; text-transform: uppercase;">Detected Source</span>
-                            <span style="color: #18181b; font-size: 10px; font-weight: 600;">${ward.source}</span>
-                        </div>
-                    </div>
-                `);
-            });
-        });
-    </script>
 </body>
 </html>
